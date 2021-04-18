@@ -1,4 +1,4 @@
-import camelot
+from camelot import read_pdf
 from pandas import concat
 from tkinter import messagebox as mb
 from tkinter import filedialog as fd
@@ -47,7 +47,7 @@ def extract_tables(fileEntry, pageEntry, shouldFormat, formatEntry):
     pageNums = pageEntry.get().split(',')
 
     for ranges in pageNums:
-        tables = camelot.read_pdf(fileName, pages=ranges)
+        tables = read_pdf(fileName, pages=ranges)
 
         print("Total tables extracted:", tables.n)
 

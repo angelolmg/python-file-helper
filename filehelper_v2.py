@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from split_merge_funcs import *
 from table_extract_funcs import *
+from PIL import ImageTk, Image
 
 title = 'File Helper'
 wsize = '500x250'
@@ -13,7 +14,15 @@ class FileHelper(tk.Tk):
         self.title(title)
         self.resizable(False, False)
         self.geometry(wsize)
+        self.iconbitmap("clippy.ico")
 
+        # Clippy Image
+        load = Image.open("clippy.png")
+        load = load.resize((105, 95), Image.ANTIALIAS)
+        render = ImageTk.PhotoImage(load)
+        self.img = tk.Label(self, image=render)
+        self.img.image = render
+        
         self._frame = None
         self.switch_frame(StartPage)
 
@@ -29,6 +38,8 @@ class StartPage(tk.Frame):
     def __init__(self, master):
         tk.Frame.__init__(self, master)
 
+        master.img.place(x=30, y=20)
+        
         tk.Label(self, text="File Helper", font=(None, 20)).pack(side="top", fill="both", pady=30)
 
         tk.Button(self, text="Open split and merge",
