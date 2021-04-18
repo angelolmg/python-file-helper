@@ -1,9 +1,8 @@
-import tkinter as tk
-from tkinter import ttk
 from tkinter import messagebox as mb
 from tkinter import filedialog as fd
 from PyPDF2 import PdfFileWriter, PdfFileReader, PdfFileMerger
 import ntpath
+import os
 
 def path_leaf(path):
     head, tail = ntpath.split(path)
@@ -25,13 +24,15 @@ def merge_pdf(fileList):
 
     for pdf in fileList:
         merger.append(pdf)
-        h, t = path_leaf(pdf)
-        newName += t[:-4] + "&"
+        head, tail = path_leaf(pdf)
+        newName += tail[:-4] + "&"
 
     newName += ".pdf"
-
+    newName = os.getcwd() + "\split_merged_pdfs\\" + newName
     merger.write(newName)
     merger.close()
+
+    return newName
 
 def split_pdf(file, begin, end):
     inputpdf = PdfFileReader(open(file, "rb"))
@@ -39,8 +40,7 @@ def split_pdf(file, begin, end):
     #print("Num. de páginas: " + str(inputpdf.numPages))
 
     if(begin < 1 or end > inputpdf.numPages or begin > end):
-        mb.showwarning(title="Page index error", message="Inconsistent page index numbers.\nCheck and try again.")
-        #print("Deu ruim com o numero de páginas!")
+        mb.showerror(title="Page index error", message="Inconsistent page index numbers.\nCheck and try again.")
         return
 
     output = PdfFileWriter()
@@ -48,7 +48,7 @@ def split_pdf(file, begin, end):
         output.addPage(inputpdf.getPage(i))
 
     head, tail = path_leaf(file)
-    newfilename = head + "/" + tail[:-4] + "_" + str(begin) + "-" + str(end) + ".pdf"
+    newfilename = os.getcwd() + "\split_merged_pdfs\\" + tail[:-4] + "_" + str(begin) + "-" + str(end) + ".pdf"
     with open(newfilename, "wb") as outputStream:
         output.write(outputStream)
     
@@ -67,20 +67,25 @@ def select_files(entry):
 
     entry.delete(0, 'end')
     for name in filenames:
-        entry.insert('end', name + '|')
+        entry.insert('end', name + ' | ')
 
 def print_filenames(entry, spMin, spMax, split, merge):
-    fileList = entry.get().split('|')[:-1]
+    fileList = entry.get().split(' | ')[:-1]
     begin = spMin.get()
     end = spMax.get()
 
     fileListSplitMerge = []
+    newName = ""
 
     if(split.get() == 1):
         for name in fileList:
             fileListSplitMerge.append(split_pdf(name, int(begin), int(end)))
+            newName += fileListSplitMerge[-1] + ", "
         if(merge.get() == 1):
-            merge_pdf(fileListSplitMerge)
+            newName = merge_pdf(fileListSplitMerge)
     elif(merge.get() == 1):
-        merge_pdf(fileList)
+        newName = merge_pdf(fileList)
+
+    mb.showinfo(title="Split Merge succeeded", 
+                message="Documents were splitted and/or merged successfully at " + newName)
 

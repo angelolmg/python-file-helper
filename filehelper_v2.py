@@ -1,4 +1,7 @@
+import tkinter as tk
+from tkinter import ttk
 from split_merge_funcs import *
+from table_extract_funcs import *
 
 title = 'File Helper'
 wsize = '500x250'
@@ -44,8 +47,8 @@ class SplitAndMerge(tk.Frame):
 
         split = tk.IntVar(value=1)
         merge = tk.IntVar(value=0)
-        shouldSplit = ttk.Checkbutton(self, text = "Split range:", variable = split)
-        shouldMerge = ttk.Checkbutton(self, text = "Merge files?", variable = merge)
+        shouldSplit = tk.Checkbutton(self, text = "Split range:", variable = split)
+        shouldMerge = tk.Checkbutton(self, text = "Merge files?", variable = merge)
 
         spFrame = ttk.Frame(self)
 
@@ -77,9 +80,37 @@ class SplitAndMerge(tk.Frame):
 class TableExtractor(tk.Frame):
     def __init__(self, master):
         tk.Frame.__init__(self, master)
-        tk.Label(self, text="This is the table extractor").pack(side="top", fill="x", pady=10)
-        tk.Button(self, text="Return to start page",
-                  command=lambda: master.switch_frame(StartPage)).pack()
+
+        fileEntry = tk.Entry(self, width=50, fg="grey")
+        pageEntry = tk.Entry(self, width=50)
+        formatEntry = tk.Entry(self, width=50)
+
+        shouldFormat = tk.IntVar(value=0)
+
+        open_button = ttk.Button(self, text='Open Files', 
+                                command=lambda: select_file(fileEntry))
+        action_button = ttk.Button(self,text='Extract table!', 
+                                command=lambda: extract_tables(fileEntry, pageEntry, shouldFormat,formatEntry))
+
+        pageEntryLabel = tk.Label(self, text="Page range: \n(ex.: 1-2, 11-16)")
+
+        formatEntryBox = tk.Checkbutton(self, text="Format collums? \n(ex.: 5, 8, 11)", 
+                                        variable = shouldFormat, 
+                                        command = lambda:toggleEntry(formatEntry))
+        formatEntry.config(state='disabled')
+        
+        open_button.grid(row=0, column=0, padx=20, pady=20, sticky='nwse')
+        action_button.grid(row=3, column=1, padx=20, pady=15, sticky='nwse')
+        fileEntry.grid(row=0, column=1, padx=20, pady=20, sticky='nwse')
+        pageEntry.grid(row=1, column=1, padx=20, pady=20, sticky='w')
+        pageEntryLabel.grid(row=1, column=0, padx=20, pady=5, sticky='nwse')
+        formatEntry.grid(row=2, column=1, padx=20, pady=20, sticky='w')
+        formatEntryBox.grid(row=2, column=0, padx=20, pady=5, sticky='w')
+
+
+        backBtn = ttk.Button(self, text="Back", 
+                            command=lambda: master.switch_frame(StartPage))
+        backBtn.grid(row=3,column=0, padx=20, pady=10, sticky='w')
 
 if __name__ == "__main__":
     app = FileHelper()
