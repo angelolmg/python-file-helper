@@ -14,7 +14,10 @@ class FileHelper(tk.Tk):
         self.title(title)
         self.resizable(False, False)
         self.geometry(wsize)
-        self.iconbitmap("clippy.ico")
+
+        # Icon
+        ico = ImageTk.PhotoImage(file='clippy.ico')
+        self.tk.call('wm', 'iconphoto', self._w, ico)
 
         # Clippy Image
         load = Image.open("clippy.png")
@@ -40,12 +43,12 @@ class StartPage(tk.Frame):
 
         master.img.place(x=30, y=20)
         
-        tk.Label(self, text="File Helper", font=(None, 20)).pack(side="top", fill="both", pady=30)
+        ttk.Label(self, text="File Helper", font=(None, 20)).pack(side="top", fill="both", pady=30)
 
-        tk.Button(self, text="Open split and merge",
+        ttk.Button(self, text="Open split and merge",
                   command=lambda: master.switch_frame(SplitAndMerge)).pack(side="top", fill="both", pady=10)
 
-        tk.Button(self, text="Open table extractor",
+        ttk.Button(self, text="Open table extractor",
                 command=lambda: master.switch_frame(TableExtractor)).pack(side="top", fill="both", pady=10)
 
         tk.Label(self, text="by Angelo L. (2021)", font=(None, 8), fg='gray').pack(side="bottom", fill="x", pady=10)
