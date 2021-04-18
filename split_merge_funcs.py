@@ -1,18 +1,18 @@
 from tkinter import messagebox as mb
 from tkinter import filedialog as fd
 from PyPDF2 import PdfFileWriter, PdfFileReader, PdfFileMerger
-import ntpath
-import os
+from ntpath import split, basename
+from os import getcwd
 
 def path_leaf(path):
-    head, tail = ntpath.split(path)
+    head, tail = split(path)
     '''
     print("path " + path)
     print("head " + head)
     print("tail " + tail)
     print("basehead " + ntpath.basename(head))
     '''
-    return head, (tail or ntpath.basename(head))
+    return head, (tail or basename(head))
     
 def merge_pdf(fileList):
 
@@ -28,7 +28,7 @@ def merge_pdf(fileList):
         newName += tail[:-4] + "&"
 
     newName += ".pdf"
-    newName = os.getcwd() + "\split_merged_pdfs\\" + newName
+    newName = getcwd() + "\split_merged_pdfs\\" + newName
     merger.write(newName)
     merger.close()
 
@@ -48,7 +48,7 @@ def split_pdf(file, begin, end):
         output.addPage(inputpdf.getPage(i))
 
     head, tail = path_leaf(file)
-    newfilename = os.getcwd() + "\split_merged_pdfs\\" + tail[:-4] + "_" + str(begin) + "-" + str(end) + ".pdf"
+    newfilename = getcwd() + "\split_merged_pdfs\\" + tail[:-4] + "_" + str(begin) + "-" + str(end) + ".pdf"
     with open(newfilename, "wb") as outputStream:
         output.write(outputStream)
     

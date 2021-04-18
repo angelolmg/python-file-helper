@@ -2,11 +2,12 @@ import camelot
 from pandas import concat
 from tkinter import messagebox as mb
 from tkinter import filedialog as fd
-import ntpath
+from ntpath import split, basename
+from os import getcwd
 
 def path_leaf(path):
-    head, tail = ntpath.split(path)
-    return head, (tail or ntpath.basename(head))
+    head, tail = split(path)
+    return head, (tail or basename(head))
 
 def formatString(s):
     original = s
@@ -64,7 +65,7 @@ def extract_tables(fileEntry, pageEntry, shouldFormat, formatEntry):
                 result[c-1] = result[c-1].apply(formatString)
 
         head, tail = path_leaf(fileName)
-        newName = head + "/extracted_tables/" + tail[:-4] + "_" + ranges + "_tables.csv"
+        newName = getcwd() + "\extracted_tables\\" + tail[:-4] + "_" + ranges + "_tables.csv"
         result.to_csv(newName)
         mb.showinfo(title="Extraction succeeded", message="Table was extracted successfully at " + newName)
 
